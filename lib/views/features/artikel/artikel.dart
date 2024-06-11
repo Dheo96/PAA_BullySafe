@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_bullysafe/models/article.dart';
+import 'package:flutter_application_bullysafe/viewmodels/article_view_model.dart';
 import 'package:flutter_application_bullysafe/views/features/artikel/detailartikel.dart';
 
 class Artikel extends StatelessWidget {
+  final ArticleViewModel viewModel = ArticleViewModel();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,213 +36,38 @@ class Artikel extends StatelessWidget {
               elevation: 0,
             ),
           ),
-          // Artikel Cards
           Expanded(
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Color(0xFFF6F6F6),
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 19,
-                    top: 25,
-                    child: Container(
-                      width: 350,
-                      height: 45,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Color(0xFFEFEFEF),
-                          prefixIcon:
-                              Icon(Icons.search, color: Color(0xFF7C7C7C)),
-                          hintText: 'Cari Artikel...',
-                          hintStyle: TextStyle(
-                            color: Color(0xFF7C7C7C),
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
+            child: StreamBuilder<List<Article>>(
+              stream: viewModel.getArticles(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No articles found.'));
+                }
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final article = snapshot.data![index];
+                    return _buildArticleCard(
+                      context,
+                      title: article.title,
+                      imageUrl: article.imageUrl,
+                      top: index * 180.0,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DetailArtikel(article: article),
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  _buildArticleCard(
-                    context,
-                    title:
-                        'Cara mengetahui tanda-tanda anak yang terkena bullying',
-                    imageUrl: "assets/images/Discrimination.png",
-                    top: 95,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailArtikel(),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildArticleCard(
-                    context,
-                    title:
-                        'Cara mengatasi bullying dan mencegah dampak buruknya',
-                    imageUrl: "assets/images/Bullying.png",
-                    top: 270,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailArtikel(),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildArticleCard(
-                    context,
-                    title: 'Faktor penyebab dan bahayanya bullying',
-                    imageUrl: "assets/images/Stop bullying.png",
-                    top: 445,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailArtikel(),
-                        ),
-                      );
-                    },
-                  ),
-                  Positioned(
-                    left: 0,
-                    top: 664,
-                    child: Container(
-                      width: 414,
-                      height: 60,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            child: Container(
-                              width: 414,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x0F000000),
-                                    blurRadius: 20,
-                                    offset: Offset(0, -5),
-                                    spreadRadius: 5,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 300,
-                            top: 11,
-                            child: Container(
-                              width: 83,
-                              height: 53,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    left: 0,
-                                    top: 0,
-                                    child: Container(
-                                      width: 83,
-                                      height: 53,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment(0.00, -1.00),
-                                          end: Alignment(0, 1),
-                                          colors: [
-                                            Colors.white,
-                                            Colors.white.withOpacity(0)
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 21,
-                            top: 2,
-                            child: Container(
-                              width: 108,
-                              height: 70,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    left: 0,
-                                    top: 0,
-                                    child: Container(
-                                      width: 108,
-                                      height: 70,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment(0.00, -1.00),
-                                          end: Alignment(0, 1),
-                                          colors: [Colors.white.withOpacity(0)],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    left: 36,
-                                    top: 15.56,
-                                    child: Container(
-                                      width: 36,
-                                      height: 38.89,
-                                      padding: const EdgeInsets.only(
-                                        top: 3.26,
-                                        left: 3,
-                                        right: 3,
-                                        bottom: 3.24,
-                                      ),
-                                      clipBehavior: Clip.antiAlias,
-                                      decoration: BoxDecoration(),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 193,
-                    top: 678,
-                    child: Container(
-                      width: 37,
-                      height: 47,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/home_icon.png"),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],
@@ -251,12 +80,12 @@ class Artikel extends StatelessWidget {
       required String imageUrl,
       required double top,
       required VoidCallback onTap}) {
-    return Positioned(
-      left: 20,
-      top: top,
+    return Padding(
+      padding: EdgeInsets.only(top: top),
       child: InkWell(
-        onTap: onTap, //
+        onTap: onTap,
         child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           width: 345,
           height: 152,
           clipBehavior: Clip.antiAlias,
@@ -298,7 +127,7 @@ class Artikel extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            'View More',
+                            'Read More',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.black,
@@ -329,6 +158,71 @@ class Artikel extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class DetailArtikel extends StatelessWidget {
+  final Article article;
+
+  DetailArtikel({required this.article});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Artikel',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 400,
+              height: 185,
+              child: Image.asset(
+                article.foto_detail_articles,
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              article.title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color(0xFF2A2A2A),
+                fontSize: 18,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                article.detail_article,
+                textAlign: TextAlign.justify,
+                style: TextStyle(
+                  color: Color(0xFF2A2A2A),
+                  fontSize: 14,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

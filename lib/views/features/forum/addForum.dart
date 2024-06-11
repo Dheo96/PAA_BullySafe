@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_bullysafe/models/forum.dart';
 import 'package:flutter_application_bullysafe/viewmodels/forum.dart';
+import 'package:flutter_application_bullysafe/views/features/forum/addForum.dart';
 
 class AddForumScreen extends StatefulWidget {
   @override
@@ -73,6 +74,8 @@ class _AddForumScreenState extends State<AddForumScreen> {
                       username: '', id: '', content: _contentController.text);
                   await _viewModel.addForum(forum);
                   _contentController.clear();
+                  _showSuccessDialog(
+                      context); // Tampilkan dialog unggah berhasil
                 },
                 child: Container(
                   width: 122,
@@ -101,6 +104,29 @@ class _AddForumScreenState extends State<AddForumScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  // Fungsi untuk menampilkan dialog unggah berhasil
+  void _showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Unggah Berhasil"),
+          content: Text("Forum Anda berhasil diunggah."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Tutup dialog
+                Navigator.pop(
+                    context); // Kembali ke halaman sebelumnya (ForumScreen)
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

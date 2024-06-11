@@ -18,7 +18,7 @@ class Forum {
 
   factory Forum.fromMap(Map<String, dynamic> map) {
     return Forum(
-      username: map ['username'],
+      username: map['username'],
       id: map['id'],
       content: map['content'],
     );

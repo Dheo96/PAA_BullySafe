@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_bullysafe/views/features/lapor/lapor.dart';
 import 'package:flutter_application_bullysafe/views/features/notification/notifikasi.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_application_bullysafe/views/features/darurat/darurat.dart';
 import 'package:flutter_application_bullysafe/views/features/konseling/konseling.dart';
 import 'package:flutter_application_bullysafe/views/features/forum/forum.dart';
@@ -65,6 +67,15 @@ class HomeScreen extends StatelessWidget {
     'Forum',
   ];
 
+  Future<String> _getUserName() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      return userDoc['name'] ?? 'User';
+    }
+    throw Exception("User not logged in");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -82,13 +93,38 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           child: AppBar(
-            title: const Text(
-              "Halo, Ummu!",
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Poppins',
-                fontSize: 20,
-              ),
+            title: FutureBuilder<String>(
+              future: _getUserName(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text(
+                    "Halo, ...",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Poppins',
+                      fontSize: 20,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text(
+                    "Halo, User!",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Poppins',
+                      fontSize: 20,
+                    ),
+                  );
+                } else {
+                  return Text(
+                    "Halo, ${snapshot.data}!",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Poppins',
+                      fontSize: 20,
+                    ),
+                  );
+                }
+              },
             ),
             centerTitle: true,
             backgroundColor: const Color(0xFFF6F6F6),
